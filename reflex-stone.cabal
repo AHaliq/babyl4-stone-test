@@ -16,6 +16,8 @@ executable reflex-stone
     , reflex
     , reflex-dom
     , text
+    , baby-l4
+    , reflex-dom-ace
 
   default-extensions:
     DataKinds

@@ -1,18 +1,36 @@
 module Main where
 
 import Control.Monad.Fix (MonadFix)
+import Control.Monad (void)
 import qualified Data.Text as T
 import Reflex.Dom
+
+import L4Parser (parseNewProgram)
+import Helpers (css, static)
+import qualified Editor (widget) as E
 
 main :: IO ()
 main =
   mainWidgetWithHead headWidget bodyWidget
 
+head2 = do
+  el "title" $ text "Try L4"
+  css $ static "main.css"
+
+body2 = do
+  prerender_ blank $ do
+    elClass "div" "container" $ do
+      el "h1" $ text "L4"
+      elClass "div" "content" $ do
+        t :: Dynamic t T.Text <- E.widget
+        elAttr "textArea" ("spellcheck" =: "false") $ parseDyn t
+    return ()
+
 headWidget :: DomBuilder t m => m ()
 headWidget = do
   elAttr "meta" ("http-equiv" =: "Content-Type" <> "content" =: "text/html; charset=utf-8") blank
   elAttr "meta" ("name" =: "viewport" <> "content" =: "width=device-width, initial-scale=1") blank
-  el "title" $ text "reflex-stone"
+  el "title" $ text "Try L4"
 
 bodyWidget ::
   ( DomBuilder t m,
@@ -40,7 +58,7 @@ bodyWidget = do
 
 stoneButton :: DomBuilder t m => m (Event t ())
 stoneButton = do
-  let attr = ("style" =: "font-size: 200%;")
+  let attr = "style" =: "font-size: 200%;"
   clickEvent $ elAttr' "button" attr stone
 
 stone :: DomBuilder t m => m ()
@@ -57,5 +75,4 @@ clickEvent ::
   ) =>
   m (target, a) ->
   m (Event t ())
-clickEvent w =
-  fmap (fmap (const ()) . domEvent Click . fst) w
+clickEvent = fmap $ void . domEvent Click . fst
