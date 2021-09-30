@@ -18,6 +18,7 @@ executable reflex-stone
     , text
     , baby-l4-core
     , reflex-dom-ace
+    , jsaddle
 
   default-extensions:
     DataKinds
