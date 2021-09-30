@@ -16,4 +16,4 @@ script :: DomBuilder t m => Text -> m ()
 script src = elAttr "script" ("type" =: "text/javascript" <> "src" =: src) blank
 
 static :: Text -> Text
-static x = T.concat ["/static/", x]
+static x = T.concat ["./static/", x]
