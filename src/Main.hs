@@ -1,33 +1,52 @@
+{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TypeApplications #-}
+{-# LANGUAGE PackageImports #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 module Main where
 
 import Control.Monad.Fix (MonadFix)
 import Control.Monad (void)
+import qualified Language.Javascript.JSaddle.Types as JS
+import qualified Reflex.Dom.Core as R
 import qualified Data.Text as T
 import Reflex.Dom
 
-import L4.Parser (parseNewProgram)
+import L4.Parser (parseProgram)
 import Helpers (css, static)
-import qualified Editor (widget) as E
+import StringUtils (indent)
+import qualified Editor as E
 
 main :: IO ()
 main =
   mainWidgetWithHead head2 body2
 
+head2 :: DomBuilder t m => m ()
 head2 = do
   el "title" $ text "Try L4"
   css $ static "main.css"
 
+
+body2 ::
+  ( R.DomBuilder t m
+  , R.TriggerEvent t m
+  , JS.MonadJSM (R.Performable m)
+  , JS.MonadJSM m
+  , R.PerformEvent t m
+  , R.PostBuild t m
+  , R.MonadHold t m
+  ) =>
+  m ()
 body2 = do
-  prerender_ blank $ do
-    elClass "div" "container" $ do
-      el "h1" $ text "L4"
-      elClass "div" "content" $ do
-        t :: Dynamic t T.Text <- E.widget
-        elAttr "textArea" ("spellcheck" =: "false") $ parseDyn t
-    return ()
+  elClass "div" "container" $ do
+    el "h1" $ text "L4"
+    elClass "div" "content" $ do
+      t :: Dynamic t T.Text <- E.widget
+      elAttr "textArea" ("spellcheck" =: "false") $ parseDyn t
+  return ()
 
 parseDyn :: (PostBuild t m, DomBuilder t m) => Dynamic t T.Text -> m ()
-parseDyn t = dynText $ T.pack . indent . show . parseNewProgram "" . T.unpack <$> t
+parseDyn t = dynText $ T.pack . indent . show . parseProgram "" . T.unpack <$> t
 
 headWidget :: DomBuilder t m => m ()
 headWidget = do
