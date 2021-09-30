@@ -5,13 +5,13 @@ import Control.Monad (void)
 import qualified Data.Text as T
 import Reflex.Dom
 
-import L4Parser (parseNewProgram)
+import L4.Parser (parseNewProgram)
 import Helpers (css, static)
 import qualified Editor (widget) as E
 
 main :: IO ()
 main =
-  mainWidgetWithHead headWidget bodyWidget
+  mainWidgetWithHead head2 body2
 
 head2 = do
   el "title" $ text "Try L4"
@@ -25,6 +25,9 @@ body2 = do
         t :: Dynamic t T.Text <- E.widget
         elAttr "textArea" ("spellcheck" =: "false") $ parseDyn t
     return ()
+
+parseDyn :: (PostBuild t m, DomBuilder t m) => Dynamic t T.Text -> m ()
+parseDyn t = dynText $ T.pack . indent . show . parseNewProgram "" . T.unpack <$> t
 
 headWidget :: DomBuilder t m => m ()
 headWidget = do

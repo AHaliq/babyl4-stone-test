@@ -18,36 +18,32 @@ let
     withHoogle = false;
     packages = {
       reflex-stone = pkgs.lib.cleanSource (gitignoreSource ./.);
+      baby-l4-core = pkgs.lib.cleanSource (gitignoreSource ./baby-l4/baby-l4-core);
     };
     shells = {
       ghc = ["reflex-stone"];
       ghcjs = ["reflex-stone"];
     };
     overrides = self: super: let
-      gf-udSrc = builtins.fetchGit {
-        url = "https://github.com/GrammaticalFramework/gf-ud.git";
-        rev = "4b0760e02f9efdb8fbdd47ed2258e9b89f15a14d";
-      };
-      aceSrc = builtins.fetchGit {
+      #gf-udSrc = builtins.fetchGit {
+      #  url = "https://github.com/GrammaticalFramework/gf-ud.git";
+      #  rev = "bd319852e7319e7c905a6807d9d8f9e273aec6d1";
+      #};
+      ace-src = builtins.fetchGit {
         url = "https://github.com/reflex-frp/reflex-dom-ace";
         rev = "f5a7f5999c20f2a27aeaa93f96f093bcc560b526";
       };
-      baby-l4Src = builtins.fetchGit {
-        url = "https://github.com/smucclaw/baby-l4.git";
-        rev = "3619459461b52864e38e6eecf36f0c94603cbc84";
-      };
-      haskellPackages = (import <nixpkgs> {}).haskellPackages;
-      xhtml_3000_2_1Src = haskellPackages.callHackage "xhtml" "3000.2.1" {};
-      haskeline_0_7_3_1Src = haskellPackages.callHackage "haskeline" "0.7.3.1" {};
-      terminfo_0_4_1_1Src = haskellPackages.callHackage "terminfo" "0.4.1.1" {};
+      #xhtml_3000_2_1Src = haskellPackages.callHackage "xhtml" "3000.2.1" {};
+      #haskeline_0_7_3_1Src = haskellPackages.callHackage "haskeline" "0.7.3.1" {};
+      #terminfo_0_4_1_1Src = haskellPackages.callHackage "terminfo" "0.4.1.1" {};
     in
     {
-      gf-ud = self.callCabal2nix "gf-ud" gf-udSrc {};
-      reflex-dom-ace = self.callCabal2nix "reflex-dom-ace" aceSrc {};
-      baby-l4 = self.callCabal2nix "baby-l4" baby-l4Src {};
-      xhtml_3000_2_1 = xhtml_3000_2_1Src;
-      haskeline_0_7_3_1 = haskeline_0_7_3_1Src;
-      terminfo_0_4_1_1 = terminfo_0_4_1_1Src;
+      #gf-ud = self.callCabal2nix "gf-ud" gf-udSrc {};
+      #self.callHackage "" src {};
+      reflex-dom-ace = self.callCabal2nix "reflex-dom-ace" ace-src {};
+      #xhtml_3000_2_1 = xhtml_3000_2_1Src;
+      #haskeline_0_7_3_1 = haskeline_0_7_3_1Src;
+      #terminfo_0_4_1_1 = terminfo_0_4_1_1Src;
       lsp = null;
       lsp-types = null;
       lsp-test = null;
