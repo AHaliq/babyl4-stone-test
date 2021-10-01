@@ -10,7 +10,11 @@ extra-source-files: README.md
 
 executable reflex-stone
   hs-source-dirs:     src
-  main-is:            Main.hs
+  main-is:            src/Main.hs
+  other-modules:
+      Editor
+    , Helpers
+    , StringUtils
   build-depends:
       base
     , reflex
