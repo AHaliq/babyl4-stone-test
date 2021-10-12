@@ -8,7 +8,7 @@ module Editor
 
 import Data.Text (Text)
 import Control.Monad (void)
-import Data.Functor ((<&>))
+import Data.Functor (($>))
 
 import qualified Language.Javascript.JSaddle.Types as JS
 import qualified Reflex.Dom.Ace as Ace
@@ -37,7 +37,7 @@ widget = do
     <> "charset" =: "utf-8"
     ) R.blank
   let scriptLoaded = () <$ R.domEvent R.Load script
-  let loading = R.el "p" $ R.text "Loading editor..." <&> const (R.constDyn "")
+  let loading = R.el "p" $ R.text "Loading editor..." $> R.constDyn ""
   dt :: R.Dynamic t (R.Dynamic t Text) <- R.widgetHold loading
     $ R.ffor scriptLoaded
     $ const $ do

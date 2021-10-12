@@ -16,6 +16,7 @@ executable reflex-stone
     , Editor
     , Helpers
     , StringUtils
+    , Style
   build-depends:
       base
     , reflex
