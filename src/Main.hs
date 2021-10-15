@@ -70,7 +70,13 @@ style = concat [
     ppt "padding-left" "1rem",
     ppt "outline" "none"
   ],
-  sel "::selection" [ppt "background-color" "var(--fg2-col)"]
+  sel "::selection" [ppt "background-color" "var(--fg2-col)"],
+  sel "@media only screen and (max-width: 600px)" [
+    sel ".content" [
+      ppt "grid-template-columns" "1fr",
+      ppt "grid-template-rows" "1fr 1fr"
+    ]
+  ]
   ]
 
 headWidget :: DomBuilder t m => m ()
