@@ -82,6 +82,7 @@ style = concat [
 headWidget :: DomBuilder t m => m ()
 headWidget = do
   el "title" $ text "Try L4"
+  elAttr "meta" ("name" =: "viewport" <> "content" =: "width=device-width, initial-scale=1") $ return ()
 
 
 bodyWidget ::
