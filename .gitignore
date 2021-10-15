@@ -1,2 +1,6 @@
 baby-l4/
 result/
+dist-newstyle
+result
+.vscode/
+cabal.project.local
