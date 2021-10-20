@@ -139,28 +139,34 @@ bodyWidget = do
     elClass "div" "content" $ do
       t :: Dynamic t T.Text <- E.widget
       elClass "div" "tabwindow" $ do
-        _ <- tabWidget ["hello", "there", "welcome", "to", "l4"]
+        _ <- tabWidget Hello [Hello, There, Welcome, To, L4]
         elAttr "textArea" ("spellcheck" =: "false") $ parseDyn t
   return ()
 
 parseDyn :: (R.PostBuild t m, R.DomBuilder t m) => Dynamic t T.Text -> m ()
 parseDyn t = dynText $ T.pack . indent . show . parseProgram "" . T.unpack <$> t
 
+data TestTabs = Hello | There | Welcome | To | L4
+  deriving (Show, Eq)
+
 tabWidget ::
   ( R.DomBuilder t m,
     R.MonadHold t m,
     R.PostBuild t m,
-    MonadFix m
+    MonadFix m,
+    Eq a,
+    Show a
   ) =>
-  [T.Text] ->
-  m (Dynamic t Int)
-tabWidget xs = do
+  a ->
+  [a] ->
+  m (Dynamic t a)
+tabWidget ix xs = do
   elClass "div" "tablist" $ mdo
     d <- mapM (btn d) ixs >>= tabdyn
     return d
   where
-    tabdyn bs = holdDyn 0 $ leftmost bs
-    ixs = zip [0 .. length xs] xs
+    tabdyn bs = holdDyn ix $ leftmost bs
+    ixs = map (\x -> (x, T.toLower . T.pack . show $ x)) xs
     btn d (i, x) =
       (i <$)
         <$> dynButtonClass
@@ -179,9 +185,7 @@ dynButtonClass c s = do
   (e, _) <- elDynClass' "div" c $ text s
   return $ domEvent Click e
 
-{-
 buttonClass :: DomBuilder t m => T.Text -> T.Text -> m (Event t ())
 buttonClass c s = do
   (e, _) <- elAttr' "div" ("class" =: c) $ text s
   return $ domEvent Click e
--}

@@ -1,13 +1,14 @@
-
 {-# LANGUAGE OverloadedStrings #-}
-module Helpers
-  ( css
-  , script
-  , static
-  )where
 
-import Reflex.Dom.Core
+module Helpers
+  ( css,
+    script,
+    static,
+  )
+where
+
 import Data.Text as T
+import Reflex.Dom.Core
 
 css :: DomBuilder t m => Text -> m ()
 css src = elAttr "link" ("href" =: src <> "type" =: "text/css" <> "rel" =: "stylesheet") blank
