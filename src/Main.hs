@@ -4,13 +4,16 @@
 {-# LANGUAGE PackageImports #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TemplateHaskell #-}
-module Main where
+{-# LANGUAGE RecursiveDo #-}
+module Main (main) where
 
 import Data.String (fromString)
 import qualified Language.Javascript.JSaddle.Types as JS
 import qualified Reflex.Dom.Core as R
 import qualified Data.Text as T
+import Control.Monad.Fix (MonadFix)
 import Reflex.Dom
+import Reflex.Dynamic (holdDyn)
 
 import L4.Parser (parseProgram)
 import StringUtils (indent)
@@ -59,10 +62,34 @@ style = concat [
     ppt "grid-template-columns" "1fr 1fr",
     ppt "flex-grow" "1"
   ],
+  sel ".tabwindow" [
+    ppt "display" "flex",
+    ppt "flex-direction" "column",
+    ppt "flex-grow" "1"
+  ],
+  sel ".tablist" [
+    ppt "display" "flex",
+    ppt "flex-wrap" "nowrap",
+    ppt "justify-content" "flex-start",
+    ppt "gap" "1rem"
+  ],
+  sel ".tabbtn" [
+    ppt "user-select" "none",
+    ppt "font-family" "'Roboto Mono', monospace",
+    ppt "letter-spacing" "0.1rem",
+    ppt "color" "var(--fg2-col)",
+    ppt "background-color" "var(--bg-col)",
+    ppt "border-bottom" "0.2rem solid var(--fg2-col)"
+  ],
+  sel ".tabselected" [
+    ppt "color" "var(--fg-col)",
+    ppt "border-bottom" "0.2rem solid var(--fg-col)"
+  ],
   sel ".section" [ppt "font-family" "'Poppins', sans-serif"],
   sel "p" [ppt "color" "red"],
   sel "textarea" [
     ppt "resize" "none",
+    ppt "flex-grow" "1",
     ppt "font-family" "'Roboto Mono', monospace",
     ppt "border" "none",
     ppt "background-color" "inherit",
@@ -93,6 +120,7 @@ bodyWidget ::
   , R.PerformEvent t m
   , R.PostBuild t m
   , R.MonadHold t m
+  , MonadFix m
   ) =>
   m ()
 bodyWidget = do
@@ -100,8 +128,38 @@ bodyWidget = do
     el "h1" $ text "L4"
     elClass "div" "content" $ do
       t :: Dynamic t T.Text <- E.widget
-      elAttr "textArea" ("spellcheck" =: "false") $ parseDyn t
+      elClass "div" "tabwindow" $ do
+        _ <- tabWidget ["hello", "there", "welcome", "to", "l4"]
+        elAttr "textArea" ("spellcheck" =: "false") $ parseDyn t
   return ()
 
-parseDyn :: (PostBuild t m, DomBuilder t m) => Dynamic t T.Text -> m ()
+parseDyn :: (R.PostBuild t m, R.DomBuilder t m) => Dynamic t T.Text -> m ()
 parseDyn t = dynText $ T.pack . indent . show . parseProgram "" . T.unpack <$> t
+
+tabWidget ::
+  ( R.DomBuilder t m
+  , R.MonadHold t m
+  , R.PostBuild t m
+  , MonadFix m
+  ) => [T.Text] -> m (Dynamic t Int)
+tabWidget xs = do
+  elClass "div" "tablist" $ mdo
+    d <- (mapM (btn d) ixs) >>= tabdyn
+    return d
+  where
+    tabdyn bs = holdDyn 0 $ leftmost bs
+    ixs = zip [0..length xs] xs
+    btn d (i,x) = (i <$) <$> dynButtonClass ((\j -> if i == j then "tabbtn tabselected" else "tabbtn") <$> d) x
+
+dynButtonClass ::
+  ( R.DomBuilder t m
+  , R.PostBuild t m
+  )=> Dynamic t T.Text -> T.Text -> m (Event t ())
+dynButtonClass c s = do
+  (e, _) <- elDynClass' "div" c $ text s
+  return $ domEvent Click e
+
+buttonClass :: DomBuilder t m => T.Text -> T.Text -> m (Event t ())
+buttonClass c s = do
+  (e, _) <- elAttr' "div" ("class" =: c) $ text s
+  return $ domEvent Click e
