@@ -1,4 +1,5 @@
 {-# LANGUAGE DataKinds #-}
+{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecursiveDo #-}
 {-# LANGUAGE ScopedTypeVariables #-}
@@ -6,6 +7,7 @@
 module Main (main) where
 
 import Control.Monad.Fix (MonadFix)
+import Data.Functor ((<&>))
 import Data.String (fromString)
 import qualified Data.Text as T
 import qualified Editor as E
@@ -82,6 +84,7 @@ style =
       sel
         ".tabbtn"
         [ ppt "user-select" "none",
+          ppt "cursor" "pointer",
           ppt "font-family" "'Roboto Mono', monospace",
           ppt "letter-spacing" "0.1rem",
           ppt "color" "var(--fg2-col)",
@@ -137,17 +140,20 @@ bodyWidget = do
   elClass "div" "container" $ do
     el "h1" $ text "L4"
     elClass "div" "content" $ do
-      t :: Dynamic t T.Text <- E.widget
+      t <- E.widget
       elClass "div" "tabwindow" $ do
-        _ <- tabWidget Hello [Hello, There, Welcome, To, L4]
-        elAttr "textArea" ("spellcheck" =: "false") $ parseDyn t
-  return ()
+        eos <- tabWidget Hello [Hello, There, Welcome, To, L4]
+        widgetHold_ (el "div" $ text "click a button") $
+          eos
+            <&> \case
+              L4 -> elAttr "textArea" ("spellcheck" =: "false") $ parseDyn t
+              b -> el "h1" $ text . T.pack . show $ b
 
 parseDyn :: (R.PostBuild t m, R.DomBuilder t m) => Dynamic t T.Text -> m ()
 parseDyn t = dynText $ T.pack . indent . show . parseProgram "" . T.unpack <$> t
 
 data TestTabs = Hello | There | Welcome | To | L4
-  deriving (Show, Eq)
+  deriving (Show, Eq, Ord)
 
 tabWidget ::
   ( R.DomBuilder t m,
@@ -159,19 +165,18 @@ tabWidget ::
   ) =>
   a ->
   [a] ->
-  m (Dynamic t a)
+  m (Event t a)
 tabWidget ix xs = do
   elClass "div" "tablist" $ mdo
-    d <- mapM (btn d) ixs >>= tabdyn
-    return d
+    bs <- leftmost <$> mapM (btn d) ixs
+    d <- holdDyn ix bs
+    return bs
   where
-    tabdyn bs = holdDyn ix $ leftmost bs
     ixs = map (\x -> (x, T.toLower . T.pack . show $ x)) xs
     btn d (i, x) =
       (i <$)
         <$> dynButtonClass
-          ( (\j -> T.concat ["tabbtn", if i == j then " tabselected" else ""]) <$> d
-          )
+          ((\j -> T.concat ["tabbtn", if i == j then " tabselected" else ""]) <$> d)
           x
 
 dynButtonClass ::
@@ -185,7 +190,9 @@ dynButtonClass c s = do
   (e, _) <- elDynClass' "div" c $ text s
   return $ domEvent Click e
 
+{-
 buttonClass :: DomBuilder t m => T.Text -> T.Text -> m (Event t ())
 buttonClass c s = do
   (e, _) <- elAttr' "div" ("class" =: c) $ text s
   return $ domEvent Click e
+-}
