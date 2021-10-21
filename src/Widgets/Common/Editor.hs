@@ -2,7 +2,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
-module Editor
+module Widgets.Common.Editor
   ( widget,
   )
 where

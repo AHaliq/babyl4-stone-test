@@ -1,4 +1,4 @@
-module StringUtils
+module Utils.String
   ( indent,
     breaki,
   )

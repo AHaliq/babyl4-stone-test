@@ -1,4 +1,4 @@
-module Style
+module Utils.Style
   ( sel,
     ppt,
     imp,
