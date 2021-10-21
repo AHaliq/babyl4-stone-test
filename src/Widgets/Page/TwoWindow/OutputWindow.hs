@@ -4,14 +4,12 @@ module Widgets.Page.TwoWindow.OutputWindow
   )
 where
 
-import Control.Monad.Trans (liftIO)
 import Data.Functor ((<&>))
 import qualified Data.Text as T
-import qualified GHCJS.DOM.Types as GDT (pToJSVal)
-import GHCJS.Types (JSVal)
 import Reflex.Dom.Core
 import qualified Widgets.Common.TabbedWindow as TabbedWindow
 import qualified Widgets.Page.TwoWindow.OutputWindow.ASTTab as ASTTab
+import qualified Widgets.Page.TwoWindow.OutputWindow.JSEcho as JSEcho
 
 data Tabs = Hello | There | Welcome | To | L4
   deriving (Show, Eq)
@@ -26,18 +24,9 @@ widget l4ast = do
     widgetHold_ (el "div" $ text "click a button") $ tabEvents <&> widgetOfTab l4ast
     return ()
 
-foreign import javascript safe "console.log $1"
-  jslog :: JSVal -> IO ()
-
 widgetOfTab :: forall t m. MonadWidget t m => Dynamic t T.Text -> Tabs -> m ()
 widgetOfTab l4ast L4 = ASTTab.widget l4ast
 widgetOfTab l4ast To = do
-  let jsv :: Dynamic t (IO ())
-      jsv = jslog . GDT.pToJSVal <$> l4ast
-      jsvIOEvent :: Event t (IO ())
-      jsvIOEvent = updated jsv
-      jsvHostEvent :: Event t (WidgetHost m ())
-      jsvHostEvent = fmap liftIO jsvIOEvent
-   in performEvent_ jsvHostEvent
+  JSEcho.widget l4ast
   el "h1" $ text . T.pack $ "To"
 widgetOfTab _ b = el "h1" $ text . T.pack . show $ b
