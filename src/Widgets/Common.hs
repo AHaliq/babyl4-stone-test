@@ -1,5 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
-
 module Widgets.Common
   ( dynButtonClass,
     buttonClass,

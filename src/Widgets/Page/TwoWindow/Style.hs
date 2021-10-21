@@ -72,8 +72,10 @@ css =
         [ ppt "color" "var(--fg-col)",
           ppt "border-bottom" "0.2rem solid var(--fg-col)"
         ],
-      sel ".section" [ppt "font-family" "'Poppins', sans-serif"],
-      sel "p" [ppt "color" "red"],
+      sel
+        ".section"
+        [ ppt "font-family" "'Poppins', sans-serif"
+        ],
       sel
         "textarea"
         [ ppt "resize" "none",
@@ -85,7 +87,10 @@ css =
           ppt "padding-left" "1rem",
           ppt "outline" "none"
         ],
-      sel "::selection" [ppt "background-color" "var(--fg2-col)"],
+      sel
+        "::selection"
+        [ ppt "background-color" "var(--fg2-col)"
+        ],
       sel
         "@media only screen and (max-width: 600px)"
         [ sel

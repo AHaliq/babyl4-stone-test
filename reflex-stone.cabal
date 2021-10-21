@@ -17,6 +17,7 @@ executable reflex-stone
     , Widgets.Common
     , Widgets.Page.TwoWindow
     , Widgets.Page.TwoWindow.OutputWindow
+    , Widgets.Page.TwoWindow.OutputWindow.ASTTab
     , Widgets.Page.TwoWindow.Style
     , Utils.Style
     , Utils.String
@@ -28,6 +29,10 @@ executable reflex-stone
     , baby-l4-core
     , reflex-dom-ace
     , jsaddle
+    , jsaddle-dom
+    , mtl
+    , ghcjs-base
+    , ghcjs-dom-jsffi
 
   default-extensions:
     DataKinds
@@ -35,6 +40,7 @@ executable reflex-stone
     LambdaCase
     OverloadedStrings
     ScopedTypeVariables
+    RecursiveDo
 
   ghc-options:        -Wall -threaded
 

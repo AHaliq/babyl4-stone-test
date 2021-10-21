@@ -3,22 +3,12 @@ module Widgets.Page.TwoWindow
   )
 where
 
-import Control.Monad.Fix (MonadFix)
-import Language.Javascript.JSaddle.Types
 import Reflex.Dom.Core
 import qualified Widgets.Common.Editor as E
 import qualified Widgets.Page.TwoWindow.OutputWindow as OutputWindow
 
 widget ::
-  ( DomBuilder t m,
-    TriggerEvent t m,
-    MonadJSM (Performable m),
-    MonadJSM m,
-    PerformEvent t m,
-    PostBuild t m,
-    MonadHold t m,
-    MonadFix m
-  ) =>
+  MonadWidget t m =>
   m ()
 widget = do
   el "title" $ text "Try L4"
