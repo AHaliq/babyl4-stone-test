@@ -11,8 +11,7 @@ where
 import Control.Monad.Fix (MonadFix)
 import qualified Data.Text as T
 import Reflex.Dom.Core
-
-import Widgets.Common 
+import Widgets.Common
 
 widget ::
   ( DomBuilder t m,
@@ -27,13 +26,17 @@ widget ::
   m (Event t a)
 widget ix xs = do
   elClass "div" "tablist" $ mdo
-    bs <- leftmost <$> mapM (btn d) ixs
+    bs <- leftmost <$> mapM (btn d . (\x -> (x, T.toLower . T.pack . show $ x))) xs
     d <- holdDyn ix bs
     return bs
-  where
-    ixs = map (\x -> (x, T.toLower . T.pack . show $ x)) xs
-    btn d (i, x) =
-      (i <$)
-        <$> dynButtonClass
-          ((\j -> T.concat ["tabbtn", if i == j then " tabselected" else ""]) <$> d)
-          x
+
+btn ::
+  ( DomBuilder t f,
+    PostBuild t f,
+    Eq a
+  ) =>
+  Dynamic t a ->
+  (a, T.Text) ->
+  f (Event t a)
+btn d (i, x) =
+  (i <$) <$> dynButtonClass ((\j -> T.concat ["tabbtn", if i == j then " tabselected" else ""]) <$> d) x
