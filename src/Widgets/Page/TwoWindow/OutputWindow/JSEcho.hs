@@ -18,11 +18,7 @@ foreign import javascript safe "console.log $1"
   jslog :: JSVal -> IO ()
 
 widget :: forall t m. MonadWidget t m => Dynamic t T.Text -> m ()
-widget l4ast =
-  let jsv = jslog . GDT.pToJSVal <$> l4ast
-      jsvIOEvent = updated jsv
-      jsvHostEvent = fmap liftIO jsvIOEvent
-   in performEvent_ jsvHostEvent
+widget l4ast = performEvent_ $ fmap liftIO $ updated $ jslog . GDT.pToJSVal <$> l4ast
 #else
 widget :: forall t m. MonadWidget t m => Dynamic t T.Text -> m ()
 widget _ = return ()
