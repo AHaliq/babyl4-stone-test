@@ -1,3 +1,4 @@
+{-# LANGUAGE MonoLocalBinds #-}
 module Widgets.Page.TwoWindow.OutputWindow
   ( Tabs,
     widget,
