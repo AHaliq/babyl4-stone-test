@@ -1,4 +1,5 @@
 {-# LANGUAGE MonoLocalBinds #-}
+
 module Widgets.Page.TwoWindow
   ( widget,
   )
@@ -14,6 +15,9 @@ widget ::
 widget = do
   el "title" $ text "Try L4"
   elAttr "meta" ("name" =: "viewport" <> "content" =: "width=device-width, initial-scale=1") $ return ()
+  _ <- elAttr' "script" ("src" =: "https://d3js.org/d3.v7.min.js") $ return ()
+  _ <- elAttr' "script" ("src" =: "stdlib.js") $ return ()
+  _ <- elAttr' "script" ("src" =: "d3.js") $ return ()
   elClass "div" "container" $ do
     el "h1" $ text "L4"
     elClass "div" "content" $ do

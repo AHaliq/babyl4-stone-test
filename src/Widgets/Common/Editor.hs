@@ -21,7 +21,7 @@ widget ::
     R.PostBuild t m,
     R.MonadHold t m
   ) =>
-  m (R.Dynamic t Text)
+  m (R.Dynamic t (Text, Maybe Ace.AceInstance))
 widget = do
   let containerId = "editor"
   void $
@@ -39,8 +39,8 @@ widget = do
       )
       R.blank
   let scriptLoaded = () <$ R.domEvent R.Load script
-  let loading = R.el "p" $ R.text "Loading editor..." $> R.constDyn ""
-  dt :: R.Dynamic t (R.Dynamic t Text) <- R.widgetHold loading $
+  let loading = R.el "p" $ R.text "Loading editor..." $> R.constDyn ("", Nothing)
+  dt :: R.Dynamic t (R.Dynamic t (Text, Maybe Ace.AceInstance)) <- R.widgetHold loading $
     R.ffor scriptLoaded $
       const $ do
         ace <- do
@@ -49,5 +49,8 @@ widget = do
                   { Ace._aceConfigMode = Just "haskell"
                   }
           Ace.aceWidget cfg (Ace.AceDynConfig (Just Ace.AceTheme_PastelOnDark)) R.never containerId "" R.never
-        return $ Ace.aceValue ace
-  R.holdDyn "" . R.switchDyn $ R.updated <$> dt
+        return $ (,) <$> Ace.aceValue ace <*> Ace.aceRef ace
+  R.holdDyn ("", Nothing) . R.switchDyn $ R.updated <$> dt
+
+--TODO join two dynamics to a tuple
+-- use ref in ASTTab to get reference

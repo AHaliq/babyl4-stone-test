@@ -35,20 +35,22 @@ css =
         ".container"
         [ ppt "display" "flex",
           ppt "flex-direction" "column",
-          ppt "flex-grow" "1",
+          ppt "width" "100%",
+          ppt "flex" "1 1 auto",
           ppt "margin" "1rem"
         ],
       sel
         ".content"
         [ ppt "display" "grid",
-          ppt "grid-template-columns" "1fr 1fr",
-          ppt "flex-grow" "1"
+          ppt "grid-template-columns" "50% 50%",
+          ppt "flex" "1 1 auto",
+          ppt "overflow" "scroll"
         ],
       sel
         ".tabwindow"
         [ ppt "display" "flex",
           ppt "flex-direction" "column",
-          ppt "flex-grow" "1"
+          ppt "overflow" "scroll"
         ],
       sel
         ".tablist"
@@ -80,6 +82,7 @@ css =
         "textarea"
         [ ppt "resize" "none",
           ppt "flex-grow" "1",
+          ppt "height" "100%",
           ppt "font-family" "'Roboto Mono', monospace",
           ppt "border" "none",
           ppt "background-color" "inherit",
@@ -90,6 +93,12 @@ css =
       sel
         "::selection"
         [ ppt "background-color" "var(--fg2-col)"
+        ],
+      sel
+        ".d3div"
+        [ ppt "overflow" "scroll",
+          ppt "width" "100%",
+          ppt "height" "100%"
         ],
       sel
         "@media only screen and (max-width: 600px)"

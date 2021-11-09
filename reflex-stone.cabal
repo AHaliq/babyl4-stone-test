@@ -40,6 +40,8 @@ executable reflex-stone
     OverloadedStrings
     ScopedTypeVariables
     RecursiveDo
+    CPP
+    MonoLocalBinds
 
   ghc-options:        -Wall -threaded
 

@@ -1,4 +1,3 @@
-{-# LANGUAGE MonoLocalBinds #-}
 module Widgets.Page.TwoWindow.OutputWindow
   ( Tabs,
     widget,
@@ -7,6 +6,7 @@ where
 
 import Data.Functor ((<&>))
 import qualified Data.Text as T
+import qualified Reflex.Dom.Ace as Ace
 import Reflex.Dom.Core
 import qualified Widgets.Common.TabbedWindow as TabbedWindow
 import qualified Widgets.Page.TwoWindow.OutputWindow.ASTTab as ASTTab
@@ -17,7 +17,7 @@ data Tabs = Hello | There | Welcome | To | L4
 
 widget ::
   MonadWidget t m =>
-  Dynamic t T.Text ->
+  Dynamic t (T.Text, Maybe Ace.AceInstance) ->
   m ()
 widget l4ast = do
   elClass "div" "tabwindow" $ do
@@ -25,9 +25,9 @@ widget l4ast = do
     widgetHold_ (el "div" $ text "click a button") $ tabEvents <&> widgetOfTab l4ast
     return ()
 
-widgetOfTab :: forall t m. MonadWidget t m => Dynamic t T.Text -> Tabs -> m ()
+widgetOfTab :: forall t m. MonadWidget t m => Dynamic t (T.Text, Maybe Ace.AceInstance) -> Tabs -> m ()
 widgetOfTab l4ast L4 = ASTTab.widget l4ast
 widgetOfTab l4ast To = do
-  JSEcho.widget l4ast
+  JSEcho.widget $ fst <$> l4ast
   el "h1" $ text . T.pack $ "To"
 widgetOfTab _ b = el "h1" $ text . T.pack . show $ b
