@@ -48,7 +48,7 @@ widget = do
                 R.def
                   { Ace._aceConfigMode = Just "haskell"
                   }
-          Ace.aceWidget cfg (Ace.AceDynConfig (Just Ace.AceTheme_PastelOnDark)) R.never containerId "" R.never
+          Ace.aceWidget cfg (Ace.AceDynConfig (Just Ace.AceTheme_Github)) R.never containerId "" R.never
         return $ (,) <$> Ace.aceValue ace <*> Ace.aceRef ace
   R.holdDyn ("", Nothing) . R.switchDyn $ R.updated <$> dt
 

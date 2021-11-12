@@ -5,23 +5,17 @@ import Utils.Style
 css :: String
 css =
   concat
-    [ imp "https://fonts.googleapis.com/css2?family=Poppins&family=Roboto+Mono&family=Slabo+27px&display=swap",
-      sel
-        ":root"
-        [ ppt "--bg-col" "#2c2828",
-          ppt "--fg-col" "#8f938f",
-          ppt "--fg2-col" "#545558"
-        ],
+    [ imp "https://fonts.googleapis.com/css2?family=Poppins&family=Roboto+Mono&family=Zilla+Slab&display=swap",
       sel
         "h1"
-        [ ppt "font-family" "'Slabo 27px', serif",
+        [ ppt "font-family" "'Zilla Slab', serif",
           ppt "font-size" "3rem"
         ],
       sel
         "html"
         [ ppt "height" "100%",
-          ppt "background-color" "var(--bg-col)",
-          ppt "color" "var(--fg-col)",
+          ppt "background-color" "var(--col-background)",
+          ppt "color" "var(--col-foreground)",
           ppt "font-size" "12px"
         ],
       sel
@@ -65,14 +59,14 @@ css =
           ppt "cursor" "pointer",
           ppt "font-family" "'Roboto Mono', monospace",
           ppt "letter-spacing" "0.1rem",
-          ppt "color" "var(--fg2-col)",
-          ppt "background-color" "var(--bg-col)",
-          ppt "border-bottom" "0.2rem solid var(--fg2-col)"
+          ppt "color" "var(--col-selectionBackground)",
+          ppt "background-color" "var(--col-background)",
+          ppt "border-bottom" "0.2rem solid var(--col-selectionBackground)"
         ],
       sel
         ".tabselected"
-        [ ppt "color" "var(--fg-col)",
-          ppt "border-bottom" "0.2rem solid var(--fg-col)"
+        [ ppt "color" "var(--col-foreground)",
+          ppt "border-bottom" "0.2rem solid var(--col-foreground)"
         ],
       sel
         ".section"
@@ -92,7 +86,7 @@ css =
         ],
       sel
         "::selection"
-        [ ppt "background-color" "var(--fg2-col)"
+        [ ppt "background-color" "var(--col-selectionBackground)"
         ],
       sel
         ".d3div"

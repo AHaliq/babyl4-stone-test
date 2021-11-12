@@ -21,7 +21,7 @@ widget ::
   m ()
 widget l4ast = do
   elClass "div" "tabwindow" $ do
-    tabEvents <- TabbedWindow.widget Hello [Hello, There, Welcome, To, L4]
+    tabEvents <- TabbedWindow.widget Hello [ Hello, There, Welcome, To,L4]
     widgetHold_ (el "div" $ text "click a button") $ tabEvents <&> widgetOfTab l4ast
     return ()
 

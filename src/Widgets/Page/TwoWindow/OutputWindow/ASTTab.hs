@@ -4,6 +4,7 @@ module Widgets.Page.TwoWindow.OutputWindow.ASTTab
 where
 
 import qualified Data.Text as T
+import qualified Reflex.Dom.Ace as Ace
 import Reflex.Dom.Core
 
 #ifdef MIN_VERSION_ghcjs_dom_jsffi
@@ -13,7 +14,6 @@ import L4.Syntax (Program)
 import L4.Annotation (SRng)
 import Utils.L4D3Json
 import Utils.String
-import qualified Reflex.Dom.Ace as Ace
 
 import Control.Monad.Trans (liftIO)
 import qualified GHCJS.DOM.Types as GDT (pToJSVal)
@@ -49,6 +49,6 @@ widgetOfL4 (Right _) = do
   --     elClass "div" "d3div" $ return ()
   --     performEvent_ $ fmap liftIO $ updated $ d3render . GDT.pToJSVal . show . d3json <$> x
 #else
-widget :: forall t m. MonadWidget t m => Dynamic t T.Text -> m ()
+widget :: forall t m. MonadWidget t m => Dynamic t (T.Text, Maybe Ace.AceInstance) -> m ()
 widget _ = return ()
 #endif
