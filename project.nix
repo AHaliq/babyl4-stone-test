@@ -21,7 +21,7 @@ let
       baby-l4-core = pkgs.lib.cleanSource (gitignoreSource ./baby-l4/baby-l4-core);
     };
     shells = {
-      ghc = [ "reflex-stone" ];
+      ghc = [ "reflex-stone" "baby-l4-core" ];
       ghcjs = [ "reflex-stone" ];
     };
     overrides = self: super:

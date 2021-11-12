@@ -12,11 +12,16 @@ executable reflex-stone
   hs-source-dirs:     src
   main-is:            Main.hs
   other-modules:
-      Main
-    , Editor
-    , Helpers
-    , StringUtils
-    , Style
+      Widgets.Common.Editor
+    , Widgets.Common.TabbedWindow
+    , Widgets.Common
+    , Widgets.Page.TwoWindow
+    , Widgets.Page.TwoWindow.OutputWindow
+    , Widgets.Page.TwoWindow.OutputWindow.ASTTab
+    , Widgets.Page.TwoWindow.OutputWindow.JSEcho
+    , Widgets.Page.TwoWindow.Style
+    , Utils.Style
+    , Utils.String
   build-depends:
       base
     , reflex
@@ -25,6 +30,8 @@ executable reflex-stone
     , baby-l4-core
     , reflex-dom-ace
     , jsaddle
+    , jsaddle-dom
+    , mtl
 
   default-extensions:
     DataKinds
@@ -32,12 +39,18 @@ executable reflex-stone
     LambdaCase
     OverloadedStrings
     ScopedTypeVariables
+    RecursiveDo
+    CPP
+    MonoLocalBinds
 
   ghc-options:        -Wall -threaded
 
   if impl(ghcjs -any)
     ghc-options: -dedupe
     cpp-options: -DGHCJS_BROWSER
+    build-depends:
+        ghcjs-dom-jsffi
+      , ghcjs-base
 
   default-language:   Haskell2010
 

@@ -1,8 +1,9 @@
-module Style
-  ( sel
-  , ppt
-  , imp
-  )where
+module Utils.Style
+  ( sel,
+    ppt,
+    imp,
+  )
+where
 
 sel :: String -> [String] -> String
 sel s cs = concat $ [s, "{"] ++ cs ++ ["}"]
