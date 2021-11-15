@@ -17,7 +17,7 @@ let
     useWarp = true;
     withHoogle = false;
     packages = {
-      reflex-stone = pkgs.lib.cleanSource (gitignoreSource ./.);
+      reflex-stone = pkgs.lib.cleanSource (gitignoreSource ./frontend);
       baby-l4-core = pkgs.lib.cleanSource (gitignoreSource ./baby-l4/baby-l4-core);
     };
     shells = {
