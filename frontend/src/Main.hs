@@ -1,11 +1,6 @@
-module Main (main) where
+module Main where
 
-import Data.String (fromString)
-import Reflex.Dom
-import qualified Widgets.Page.TwoWindow as W
-import Widgets.Page.TwoWindow.Style (css)
+import qualified InnerMain as IM
 
 main :: IO ()
-main =
-  let cssString = fromString css
-   in mainWidgetWithCss cssString W.widget
+main = IM.main

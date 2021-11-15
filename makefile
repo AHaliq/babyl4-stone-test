@@ -2,4 +2,4 @@ build:
 	nix-build
 
 server:
-	cd result && python3 -m http.serve
+	cd result && python3 -m http.server

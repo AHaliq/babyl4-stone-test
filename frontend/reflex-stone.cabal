@@ -12,7 +12,8 @@ executable reflex-stone
   hs-source-dirs:     src
   main-is:            Main.hs
   other-modules:
-      Widgets.Common.Editor
+      InnerMain
+    , Widgets.Common.Editor
     , Widgets.Common.TabbedWindow
     , Widgets.Common
     , Widgets.Page.TwoWindow
