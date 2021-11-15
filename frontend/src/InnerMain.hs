@@ -1,4 +1,4 @@
-module Main (main) where
+module InnerMain (main) where
 
 import Data.String (fromString)
 import Reflex.Dom

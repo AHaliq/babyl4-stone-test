@@ -6,13 +6,14 @@ license-file:       LICENSE
 author:             Sridhar Ratnakumar
 maintainer:         srid@srid.ca
 build-type:         Simple
-extra-source-files: README.md
+-- extra-source-files: README.md
 
 executable reflex-stone
   hs-source-dirs:     src
   main-is:            Main.hs
   other-modules:
-      Widgets.Common.Editor
+      InnerMain
+    , Widgets.Common.Editor
     , Widgets.Common.TabbedWindow
     , Widgets.Common
     , Widgets.Page.TwoWindow

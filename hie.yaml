@@ -9,11 +9,11 @@ cradle:
     - path: ./Setup.hs
       config:
         cradle: { none: {}}
-    - path: ./src
+    - path: ./frontend/src
       config:
         cradle:
           cabal:
-            - path: ./src
+            - path: ./frontend/src
               component: "reflex-stone"
 
             # - path: ./baby-l4/baby-l4-core
