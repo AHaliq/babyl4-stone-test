@@ -28,6 +28,7 @@ executable reflex-stone
     , reflex
     , reflex-dom
     , text
+    , bytestring
     , baby-l4-core
     , reflex-dom-ace
     , jsaddle
@@ -52,6 +53,13 @@ executable reflex-stone
     build-depends:
         ghcjs-dom-jsffi
       , ghcjs-base
+  else
+    build-depends:
+        jsaddle-warp
+      , warp
+      , websockets
+      , wai
+      , wai-app-static
 
   default-language:   Haskell2010
 

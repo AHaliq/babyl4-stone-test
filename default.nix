@@ -29,5 +29,5 @@ in
         -O ADVANCED \
         -W QUIET \
         ${app}/bin/${name}.jsexe/all.js
-    cp -r ${./static}/* $out
+    cp -r ${./static} $out/static
   ''
