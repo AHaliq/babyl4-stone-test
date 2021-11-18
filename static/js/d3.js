@@ -306,7 +306,8 @@ function force_tree(editor, dataobj, {
   parents = [],
   svg = null,
   wdt = 200,
-  hgt = 200
+  hgt = 200,
+  domele = null
 } = {}) {
   drag = simulation => {
 
@@ -387,10 +388,16 @@ function force_tree(editor, dataobj, {
     return d.children ? d.children.map(x => getDepth(x, v + 1)).reduce((a, x) => Math.max(a, x), v) : v;
   }
 
-  const height = hgt;
-  const width = wdt;
-  svg = svg ?? d3.create("svg")
-    .attr("viewBox", [-width / 2, -height / 2, width, height]);
+  svg = svg ?? d3.create("svg");
+  const maximizeRes = () => {
+    const width = domele.clientWidth;
+    const height = domele.clientHeight;
+    svg.node().setAttribute("viewBox", `${Math.round(-width / 2)} ${Math.round(-height / 2)} ${width} ${height}`);
+    svg.node().setAttribute("width", `${width}`);
+    svg.node().setAttribute("height", `${height}`);
+  };
+  maximizeRes();
+  window.addEventListener("resize", maximizeRes);
 
   const { data, root, links, nodes } = prunewrap(dataobj);
 
@@ -482,19 +489,59 @@ function force_tree(editor, dataobj, {
 //   return c;
 // }
 
-async function d3render(editor, datajson, domele) {
+// HASKELL ASTTAB to JS INTERFACE ------------
+
+/**
+ * Generates svg elements and puts them as child of the specified dom element
+ */
+function d3render(domele, editor, datajson) {
   f = force_tree;
   if (datajson === "") {
     if (domele)
       while (domele.firstChild) domele.removeChild(domele.firstChild);
     return;
   }
-  const dataparse = JSON.parse(JSON.parse(datajson));
+  const dataparse = JSON.parse(datajson);
   console.log(dataparse);
-  const c = f(editor, dataparse, { wdt: domele.clientWidth, hgt: domele.clientHeight });
+  const c = f(editor, dataparse, { wdt: domele.clientWidth, hgt: domele.clientHeight, domele: domele });
   if (domele) {
     while (domele.firstChild) domele.removeChild(domele.firstChild);
     domele.appendChild(c);
   }
   return c;
+}
+
+/**
+ * Observer that watches for all children nodes being added to body and caches them
+ */
+let lastRenderAction = null;
+let domCache = {};
+(() => {
+  const targetNode = document.body;
+  const config = { attributes: true, childList: true, subtree: true };
+  const observer = new MutationObserver((mutationList, observer) => {
+    mutationList.filter(m => m.type === 'childList' && m.addedNodes.length > 0).forEach(m => {
+      m.addedNodes.forEach(ele => {
+        domCache[ele.className] = ele;
+        if (lastRenderAction !== null && ele.className === lastRenderAction.a) {
+          d3render(ele, lastRenderAction.b, lastRenderAction.c);
+        }
+      });
+    });
+  });
+  observer.observe(targetNode, config);
+})();
+
+/**
+ * Informs Observer of a render action
+ * if domelement is already in the dom; render d3 immediately
+ * if domelement is not in the dom wait till observer catches it; render d3 immediately
+ * if both happens, the latter will ensure valid dom element instead of old removed d3 container
+ */
+function d3renderOnEleAddToNode(domclass, editor, datajson) {
+  lastRenderAction = { a: domclass, b: editor, c: datajson };
+  const domele = domCache[domclass];
+  if (domele) {
+    d3render(domele, editor, datajson);
+  }
 }
