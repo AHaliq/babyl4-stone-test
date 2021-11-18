@@ -29,32 +29,21 @@ default (T.Text)
 --   d3render :: JSVal -> JSVal -> IO ()
 
 -- :: MonadJSM m => String -> m ()
-d3render :: MonadJSM m => JSVal -> String -> m ()
+d3render :: MonadJSM m => String -> JSVal -> String -> m ()
 -- d3render _ _ = _ "d3render($1, $2, document.querySelector('.d3div'));"
-d3render a b = void . liftJSM $ jsgf "d3render"  (a, b, eval "document.querySelector('.d3div')")
+d3render a b c = void . liftJSM $ jsgf "d3renderOnEleAddToNode"  (a, b, c)
 
 widget :: forall t m. MonadWidget t m => Dynamic t (T.Text, Maybe Ace.AceInstance) -> m ()
 widget l4ast = do
-  widgetHold_ (return ()) $ updated $ widgetOfL4 <$> parsed
-  elClass "div" "d3div" $ return ()
-  performEvent_ $ updated $ d3render <$> jseditor <*> parsed'
+  widgetHold_ (return ()) $ updated $ widgetOfL4 . (\(a,b) -> (parseProgram "" . T.unpack $ a, maybe nullRef Ace.unAceInstance $ b)) <$> l4ast
   return ()
-  where
-    jseditor = maybe nullRef Ace.unAceInstance . snd <$> l4ast
-    parsed = parseProgram "" . T.unpack . fst <$> l4ast
-    parsed' = either (const "") (show . d3json) <$> parsed
 
-widgetOfL4 :: forall t m. MonadWidget t m => Either Err (Program SRng) -> m ()
-widgetOfL4 (Left x) = do
+widgetOfL4 :: forall t m. MonadWidget t m => (Either Err (Program SRng), JSVal) -> m ()
+widgetOfL4 (Left x, _) = do
   elAttr "textArea" ("spellcheck" =: "false") $ text $ T.pack . indent . show $ x
   return ()
-widgetOfL4 (Right _) = do
+widgetOfL4 (Right x, jseditor) = do
+  elClass "div" "d3div" $ return ()
+  d3render "d3div" jseditor $ d3json x
   return ()
-
-  -- either f g $ parseProgram "" . T.unpack <$> l4ast
-  -- where
-  --   f x = elAttr "textArea" ("spellcheck" =: "false") $
-  --     dynText $ T.pack . indent . show <$> x
-  --   g x = do
-  --     elClass "div" "d3div" $ return ()
-  --     performEvent_ $ fmap liftIO $ updated $ d3render . GDT.pToJSVal . show . d3json <$> x
+  
