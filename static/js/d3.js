@@ -389,7 +389,7 @@ function force_tree(editor, dataobj, {
 
   svg = svg ?? d3.create("svg");
   const maximizeRes = (e) => {
-    const container = (domele ?? svg.node().parentNode);
+    const container = domele;
     const width = container.clientWidth;
     const height = container.clientHeight;
     svg.node().setAttribute("viewBox", `${Math.round(-width / 2)} ${Math.round(-height / 2)} ${width} ${height}`);
@@ -444,7 +444,7 @@ function force_tree(editor, dataobj, {
       if (i.data.toplevel || i.data.more) {
         svg.selectAll("g").remove();
         window.removeEventListener("resize", maximizeRes);
-        force_tree(editor, i.data.orig, { svg: svg, parents: i.data.parents });
+        force_tree(editor, i.data.orig, { svg: svg, parents: i.data.parents, domele: domele });
         // more node and parent node
       } else {
         let range = new ace.Range(
