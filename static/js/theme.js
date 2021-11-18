@@ -14,7 +14,7 @@ function setCssVars(theme) {
 // save to css vars
 
 (async () => await Promise.all(Object.entries(themes).map(
-  ([key, _]) => fetch(`themes/${key}.json`)
+  ([key, _]) => fetch(`static/themes/${key}.json`)
     .then(response => response.json())
     .then(json => {
       themes[key] = json;
