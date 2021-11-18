@@ -22,7 +22,7 @@ import Network.Wai (Application, requestMethod, pathInfo)
 import Network.Wai.Handler.Warp
        (defaultSettings, setTimeout, setPort, runSettings)
 import Network.WebSockets (defaultConnectionOptions)
-import Network.Wai.Application.Static (staticApp, defaultWebAppSettings)
+import Network.Wai.Application.Static (staticApp, defaultFileServerSettings)
 
 import Language.Javascript.JSaddle.Run (syncPoint)
 import Language.Javascript.JSaddle.WebSockets
@@ -42,7 +42,7 @@ runWarp port f =
        jsaddleOr defaultConnectionOptions (f >> syncPoint) jsaddleApp
 
 waiApp :: Application
-waiApp = staticApp (defaultWebAppSettings "../")
+waiApp = staticApp (defaultFileServerSettings "../")
 
 staticMiddleware :: Application -> Application
 staticMiddleware app = \req resp -> aux (requestMethod req, pathInfo req) req resp
