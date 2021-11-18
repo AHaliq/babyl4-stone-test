@@ -310,7 +310,6 @@ function force_tree(editor, dataobj, {
   domele = null
 } = {}) {
   drag = simulation => {
-
     function dragstarted(event, d) {
       if (!event.active) simulation.alphaTarget(0.3).restart();
       d.fx = d.x;
@@ -389,9 +388,10 @@ function force_tree(editor, dataobj, {
   }
 
   svg = svg ?? d3.create("svg");
-  const maximizeRes = () => {
-    const width = domele.clientWidth;
-    const height = domele.clientHeight;
+  const maximizeRes = (e) => {
+    const container = (domele ?? svg.node().parentNode);
+    const width = container.clientWidth;
+    const height = container.clientHeight;
     svg.node().setAttribute("viewBox", `${Math.round(-width / 2)} ${Math.round(-height / 2)} ${width} ${height}`);
     svg.node().setAttribute("width", `${width}`);
     svg.node().setAttribute("height", `${height}`);
@@ -443,6 +443,7 @@ function force_tree(editor, dataobj, {
     .on("click", (d, i) => {
       if (i.data.toplevel || i.data.more) {
         svg.selectAll("g").remove();
+        window.removeEventListener("resize", maximizeRes);
         force_tree(editor, i.data.orig, { svg: svg, parents: i.data.parents });
         // more node and parent node
       } else {
